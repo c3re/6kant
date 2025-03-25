@@ -18,11 +18,25 @@ const char htmlCode[] PROGMEM = R"rawliteral(
             color: white; /* White text color */
             font-family: Arial, sans-serif;
         }
-        .led-strip {
-            position: relative;
+        .container {
             width: 400px;
             height: 400px;
+            position: relative;
             margin: 0 auto;
+        }
+        .led-strip {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 0px;
+            left: 0px;
+        }
+        .button-strip {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 0px;
+            left: 0px;
         }
         .led {
             width: 20px;
@@ -47,28 +61,30 @@ const char htmlCode[] PROGMEM = R"rawliteral(
 </head>
 <body>
     <h1>6kant</h1>
-    <div class="led-strip" id="gameFieldStrip"></div>
-    <button class="button" id="button1" onclick="sendColorChange(1)">1</button>
-    <button class="button" id="button2" onclick="sendColorChange(2)">2</button>
-    <button class="button" id="button3" onclick="sendColorChange(3)">3</button>
-    <button class="button" id="button4" onclick="sendColorChange(4)">4</button>
-    <button class="button" id="button5" onclick="sendColorChange(5)">5</button>
-    <button class="button" id="button6" onclick="sendColorChange(6)">6</button>
+    <div class="container">
+        <div class="led-strip" id="gameFieldStrip"></div>
+        <div class="button-strip" id="buttonStrip">
+            <button class="button" id="button1" onclick="sendColorChange(1)">1</button>
+            <button class="button" id="button2" onclick="sendColorChange(2)">2</button>
+            <button class="button" id="button3" onclick="sendColorChange(3)">3</button>
+            <button class="button" id="button4" onclick="sendColorChange(4)">4</button>
+            <button class="button" id="button5" onclick="sendColorChange(5)">5</button>
+            <button class="button" id="button6" onclick="sendColorChange(6)">6</button>
+        </div>
+    </div>
     <script>
-        const socket = new WebSocket('ws://' + window.location.hostname + ':81');
         const gameFieldStrip = document.getElementById("gameFieldStrip");
+        const buttonStrip = document.getElementById("buttonStrip");
         const numGameFieldLeds = 60;
         const hexagonRadius = 150; // Radius of the hexagon
         const ledsPerSide = 11;
-        const buttonOffsetY = 90; // Additional offset to move buttons further down
-        const buttonOffsetX = 10; // Horizontal offset for buttons
         const buttonOffsets = [
-            { x: buttonOffsetX + 0, y: -hexagonRadius * Math.sqrt(3) / 2 + buttonOffsetY }, // Top
-            { x: buttonOffsetX + hexagonRadius * Math.sqrt(3) / 2, y: -hexagonRadius / 2 + buttonOffsetY }, // Top-right
-            { x: buttonOffsetX + hexagonRadius * Math.sqrt(3) / 2, y: hexagonRadius / 2 + buttonOffsetY }, // Bottom-right
-            { x: buttonOffsetX + 0, y: hexagonRadius * Math.sqrt(3) / 2 + buttonOffsetY }, // Bottom
-            { x: buttonOffsetX - hexagonRadius * Math.sqrt(3) / 2, y: hexagonRadius / 2 + buttonOffsetY }, // Bottom-left
-            { x: buttonOffsetX - hexagonRadius * Math.sqrt(3) / 2, y: -hexagonRadius / 2 + buttonOffsetY } // Top-left
+            { x: 0, y: -37 + -hexagonRadius * Math.sqrt(3) / 2 }, // Top
+            { x: 22.5 + hexagonRadius * Math.sqrt(3) / 2, y:  -hexagonRadius / 2 }, // Top-right
+            { x: 22.5 + hexagonRadius * Math.sqrt(3) / 2, y:  + hexagonRadius / 2 }, // Bottom-right
+            { x: 0, y: 37 + hexagonRadius * Math.sqrt(3) / 2 }, // Bottom
+            { x: -22.5 + -hexagonRadius * Math.sqrt(3) / 2, y:  -hexagonRadius / 2 }, // Bottom-left
+            { x: -22.5 + -hexagonRadius * Math.sqrt(3) / 2, y:  + hexagonRadius / 2 } // Top-left
         ];
         for (let i = 0; i < numGameFieldLeds; i++) {
             const led = document.createElement("div");
@@ -81,13 +97,16 @@ const char htmlCode[] PROGMEM = R"rawliteral(
             const yOffset = hexagonRadius * Math.sin(angle) + (positionOnSide / (ledsPerSide - 1)) * (hexagonRadius * Math.sin(nextAngle) - hexagonRadius * Math.sin(angle));
             led.style.left = `${200 + xOffset}px`;
             led.style.top = `${200 + yOffset}px`;
+            led.style.backgroundColor = `rgb(${0x9d}, ${0x00}, ${0xff})`;
             gameFieldStrip.appendChild(led);
         }
         for (let i = 0; i < 6; i++) {
             const button = document.getElementById(`button${i + 1}`);
             button.style.left = `${200 + buttonOffsets[i].x}px`;
             button.style.top = `${200 + buttonOffsets[i].y}px`;
+            button.style.backgroundColor = `rgb(${0xff}, ${0xff}, ${0xff})`;
         }
+        const socket = new WebSocket('ws://' + window.location.hostname + ':81');
         socket.onmessage = function(event) {
             const reader = new FileReader();
             reader.onload = function() {
