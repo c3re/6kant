@@ -79,7 +79,7 @@ void Game::render() {
 
                 switch(simonSaysGame.getCurrentShowModeSequence()) {
                     case 0:
-                        fill_solid(game_field_leds + 0, 11, PLAYER1_COLOR);
+                        fill_solid(game_field_leds + 0, 10, PLAYER1_COLOR);
                         break;
                     case 1:
                         fill_solid(game_field_leds + 10, 11, PLAYER2_COLOR);
@@ -119,6 +119,7 @@ void Game::handleButtonPress(int buttonIndex) {
             next_game_mode = GAME_START;
             break;
         case SIMON_SAYS:
+            Serial.println(buttonIndex);
             simonSaysGame.guess(buttonIndex);
             break;
         case SPRINT:

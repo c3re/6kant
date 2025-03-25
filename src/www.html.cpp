@@ -10,8 +10,8 @@ const char htmlCode[] PROGMEM = R"rawliteral(
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LED Strip Steuerung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>6kant</title>
     <style>
         body {
             background-color: #101010; /* Very dark gray, almost black */
@@ -79,12 +79,12 @@ const char htmlCode[] PROGMEM = R"rawliteral(
         const hexagonRadius = 150; // Radius of the hexagon
         const ledsPerSide = 11;
         const buttonOffsets = [
-            { x: 0, y: -37 + -hexagonRadius * Math.sqrt(3) / 2 }, // Top
-            { x: 22.5 + hexagonRadius * Math.sqrt(3) / 2, y:  -hexagonRadius / 2 }, // Top-right
             { x: 22.5 + hexagonRadius * Math.sqrt(3) / 2, y:  + hexagonRadius / 2 }, // Bottom-right
             { x: 0, y: 37 + hexagonRadius * Math.sqrt(3) / 2 }, // Bottom
-            { x: -22.5 + -hexagonRadius * Math.sqrt(3) / 2, y:  -hexagonRadius / 2 }, // Bottom-left
-            { x: -22.5 + -hexagonRadius * Math.sqrt(3) / 2, y:  + hexagonRadius / 2 } // Top-left
+            { x: -22.5 + -hexagonRadius * Math.sqrt(3) / 2, y:  + hexagonRadius / 2 }, // Bottom-left
+            { x: -22.5 + -hexagonRadius * Math.sqrt(3) / 2, y:  -hexagonRadius / 2 }, // Top-left
+            { x: 0, y: -37 + -hexagonRadius * Math.sqrt(3) / 2 }, // Top
+            { x: 22.5 + hexagonRadius * Math.sqrt(3) / 2, y:  -hexagonRadius / 2 }, // Top-right
         ];
         for (let i = 0; i < numGameFieldLeds; i++) {
             const led = document.createElement("div");

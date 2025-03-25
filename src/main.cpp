@@ -9,6 +9,7 @@ void sendColorData();
 
 void setup() {
   delay(3500);
+  Serial.begin(115200);
   WiFi.softAP(ssid, password);
 
   randomSeed(analogRead(0));

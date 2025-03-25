@@ -9,6 +9,11 @@ void SimonSays::guess(uint8_t button_index) {
         return;
     }
 
+    Serial.print("should be: ");
+    Serial.println(sequence[current_sequence_index]);
+    Serial.print("current_sequence_index: ");
+    Serial.println(current_sequence_index);
+    last_guess_time = millis();
     if (button_index == sequence[current_sequence_index]) {
         current_sequence_index++;
         if (current_sequence_index >= SIMON_SAYS_SEQUENCE_LENGTH) {
@@ -38,6 +43,7 @@ void SimonSays::game_loop() {
             if(show_mode_sequence_index >= current_sequence_index) {
                 show_mode = false;
                 show_mode_sequence_index = 0;
+
                 return;
             }
 
@@ -57,10 +63,17 @@ void SimonSays::game_loop() {
 }
 
 void SimonSays::reset() {
+    Serial.println("reset");
     rand16seed = random();
     for (uint8_t i = 0; i < SIMON_SAYS_SEQUENCE_LENGTH; i++) {
         sequence[i] = random8(0, 6);
     }
+    Serial.print("randoms: ");
+    for (uint8_t i = 0; i < SIMON_SAYS_SEQUENCE_LENGTH; i++) {
+        Serial.print(sequence[i]);
+        Serial.print(" ");
+    }
+    Serial.println();
     current_sequence_index = 0;
     game_over = false;
     game_won = false;
