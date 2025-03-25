@@ -26,6 +26,7 @@
 
 #define SIMON_SAYS_SEQUENCE_LENGTH 5
 #define SIMON_SAYS_GUESS_TIME_MILLIS 10000
+#define SIMON_SAYS_SHOW_MODE_TIME_MILLIS 750
 
 extern const char *ssid;
 extern const char *password;

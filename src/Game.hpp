@@ -1,7 +1,11 @@
 #pragma once
 
 #include <FastLED.h>
+
 #include "configuration.hpp"
+#include "SimonSays.hpp"
+
+extern SimonSays simonSaysGame;
 
 enum GameMode {
     IDLE,
@@ -32,4 +36,5 @@ private:
     bool is_in_interval_with_pause_between(uint32_t interval, uint32_t pause);
     int next_game_mode;
     uint8_t idle_hue;
+    void render_player_buttons();
 };

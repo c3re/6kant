@@ -11,6 +11,8 @@ void setup() {
   delay(3500);
   WiFi.softAP(ssid, password);
 
+  randomSeed(analogRead(0));
+
   webSocket.begin();
   setupLEDs();
 
