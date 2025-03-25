@@ -12,4 +12,5 @@ void setupLEDs() {
     .setDither(BRIGHTNESS < 255);
 
   FastLED.setBrightness(BRIGHTNESS);
+  FastLED.set_max_power_in_volts_and_milliamps(5, MAX_CURRENT);
 } 
