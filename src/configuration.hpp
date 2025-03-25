@@ -24,5 +24,5 @@
 #define PLAYER5_COLOR CRGB(0, 255, 255) //OR 0, 102, 102
 #define PLAYER6_COLOR CRGB(255, 0, 255) //OR 102, 102, 0
 
-const char *ssid = "6kant";
-const char *password = "clubmate";
+extern const char *ssid;
+extern const char *password;
