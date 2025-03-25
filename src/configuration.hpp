@@ -24,5 +24,8 @@
 #define PLAYER5_COLOR CRGB(0, 255, 255) //OR 0, 102, 102
 #define PLAYER6_COLOR CRGB(255, 0, 255) //OR 102, 102, 0
 
+#define SIMON_SAYS_SEQUENCE_LENGTH 5
+#define SIMON_SAYS_GUESS_TIME_MILLIS 10000
+
 extern const char *ssid;
 extern const char *password;

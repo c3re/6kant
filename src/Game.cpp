@@ -14,27 +14,33 @@ void Game::render() {
     switch (game_mode) {
         case IDLE:
             game_mode = next_game_mode;
-            fill_rainbow(game_field_leds, NUM_GAME_FIELD_LEDS, idle_hue, 10);
+            fill_rainbow(game_field_leds, NUM_GAME_FIELD_LEDS, idle_hue, 4);
             idle_hue += 1;
             
             break;
         case GAME_START:
             fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Black);
-            if (get_time_elapsed_seconds() > 3) {
+            fill_solid(game_player_buttons_leds, 6, CRGB::Black);
+
+            if (get_time_elapsed_seconds() > 4) {
                 game_mode = next_game_mode;
                 game_start_time = millis();
+            } else if (get_time_elapsed_seconds() > 3) {
+                fill_solid(game_player_buttons_leds, 6, CRGB::Green);
+                fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Black);
             } else if (get_time_elapsed_seconds() > 2) {
                 fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Green);
             } else if (get_time_elapsed_seconds() > 1) {
-                fill_solid(game_field_leds + 0, 20, CRGB::Yellow);
-                fill_solid(game_field_leds + 30, 20, CRGB::Yellow);
+                fill_solid(game_field_leds + 0, 10, CRGB::Yellow);
+                fill_solid(game_field_leds + 20, 20, CRGB::Yellow);
+                fill_solid(game_field_leds + 50, 10, CRGB::Yellow);
             } else if (get_time_elapsed_seconds() > 0) {
                 fill_solid(game_field_leds + 0, 10, CRGB::Red);
                 fill_solid(game_field_leds + 20, 10, CRGB::Red);
                 fill_solid(game_field_leds + 40, 10, CRGB::Red);
             }
 
-            if (running_since_interval_ms(0, 50) || running_since_interval_ms(983, 1033) || running_since_interval_ms(1967, 2017) || running_since_interval_ms(2950, 3000)) {
+            if (running_since_interval_ms(0, 100) || running_since_interval_ms(1000, 1100) || running_since_interval_ms(2000, 2100) || running_since_interval_ms(3000, 4000)) {
                 buzzer_active = true;
             } else {
                 buzzer_active = false;
@@ -46,8 +52,11 @@ void Game::render() {
                 game_mode = IDLE;
                 game_start_time = millis();
                 idle_hue = 0;
+                buzzer_active = false;
             }
             fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Red);
+            buzzer_active = true;
+
             break;
         case SIMON_SAYS:
             break;
