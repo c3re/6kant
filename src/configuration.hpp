@@ -23,3 +23,6 @@
 #define PLAYER4_COLOR CRGB(255, 255, 0) //OR 51, 0, 102
 #define PLAYER5_COLOR CRGB(0, 255, 255) //OR 0, 102, 102
 #define PLAYER6_COLOR CRGB(255, 0, 255) //OR 102, 102, 0
+
+const char *ssid = "6kant";
+const char *password = "clubmate";
