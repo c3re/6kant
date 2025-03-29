@@ -37,4 +37,5 @@ private:
     int next_game_mode;
     uint8_t idle_hue;
     void render_player_buttons();
+    bool last_game_was_won;
 };

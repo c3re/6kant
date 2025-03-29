@@ -15,6 +15,8 @@ void Game::render() {
         case IDLE:
             game_mode = next_game_mode;
             fill_rainbow(game_field_leds, NUM_GAME_FIELD_LEDS, idle_hue, 4);
+            render_player_buttons();
+            
             idle_hue += 1;
             
             break;
@@ -52,60 +54,34 @@ void Game::render() {
             break;
         case GAME_END:
             if (get_time_elapsed_seconds() > 3) {
-                game_mode = IDLE;
-                game_start_time = millis();
-                idle_hue = 0;
-                buzzer_active = false;
+                reset();
             }
-            fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Red);
+            if (last_game_was_won) {
+                fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Green);
+            } else {
+                fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Red);
+            }
             fill_solid(game_player_buttons_leds, 6, CRGB::Black);
             buzzer_active = true;
 
             break;
         case SIMON_SAYS:
-            simonSaysGame.game_loop();
+            simonSaysGame.game_loop(game_field_leds, game_player_buttons_leds);
             if (simonSaysGame.isGameOver()) {
                 if (simonSaysGame.isGameWon()) {
-                    fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Green);
+                    last_game_was_won = true;
                 } else {
-                    fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Red);
+                    last_game_was_won = false;
                 }
                 //delay
                 game_start_time = millis();
+                next_game_mode = GAME_END;
                 game_mode = GAME_END;
-            } else if (simonSaysGame.isShowMode()) {
-                fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Black);
-                fill_solid(game_player_buttons_leds, 6, CRGB::Black);
-
-                switch(simonSaysGame.getCurrentShowModeSequence()) {
-                    case 0:
-                        fill_solid(game_field_leds + 0, 10, PLAYER1_COLOR);
-                        break;
-                    case 1:
-                        fill_solid(game_field_leds + 10, 11, PLAYER2_COLOR);
-                        break;
-                    case 2:
-                        fill_solid(game_field_leds + 20, 11, PLAYER3_COLOR);
-                        break;
-                    case 3:
-                        fill_solid(game_field_leds + 30, 11, PLAYER4_COLOR);
-                        break;
-                    case 4:
-                        fill_solid(game_field_leds + 40, 11, PLAYER5_COLOR);
-                        break;
-                    case 5:
-                        fill_solid(game_field_leds + 50, 10, PLAYER6_COLOR);
-                        fill_solid(game_field_leds + 0, 1, PLAYER6_COLOR);
-                        break;
-                }
-            } else {
+            } else if (!simonSaysGame.isShowMode() && !simonSaysGame.isShowModeCorrectGuess()) {
                 render_player_buttons();
+                fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Black);
                 const uint8_t* sequence = simonSaysGame.getSequence();
                 uint8_t currentIndex = simonSaysGame.getCurrentSequenceIndex();
-                fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Black);
-                if (currentIndex < SIMON_SAYS_SEQUENCE_LENGTH) {
-                    game_field_leds[sequence[currentIndex]] = CRGB::White;
-                }
             }
             break;
         case SPRINT:
@@ -114,8 +90,10 @@ void Game::render() {
 }
 
 void Game::handleButtonPress(int buttonIndex) {
+    Serial.println("handleButtonPress: " + String(buttonIndex));
     switch (game_mode) {
         case IDLE:
+            reset();
             next_game_mode = GAME_START;
             break;
         case SIMON_SAYS:
@@ -135,6 +113,7 @@ void Game::reset() {
     idle_hue = 0;
     buzzer_active = false;
     simonSaysGame.reset();
+    last_game_was_won = false;
 }
 
 int Game::get_time_elapsed_seconds() {

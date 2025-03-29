@@ -3,11 +3,11 @@
 #define BUZZER_PIN 18
 
 #define BTN1_PIN 4
-#define BTN2_PIN 13
-#define BTN3_PIN 14
-#define BTN4_PIN 26
-#define BTN5_PIN 32
-#define BTN6_PIN 33
+#define BTN2_PIN 32
+#define BTN3_PIN 33
+#define BTN4_PIN 13
+#define BTN5_PIN 14
+#define BTN6_PIN 26
 
 #define GAME_FIELD_LED_DATA_PIN 16
 #define GAME_BUTTONS_LED_DATA_PIN 17

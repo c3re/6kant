@@ -5,7 +5,13 @@
 #include "LEDSetup.hpp"
 #include "WebServerSetup.hpp"
 
+#define NUM_BUTTONS 6
+const int buttonPins[NUM_BUTTONS] = {BTN1_PIN, BTN2_PIN, BTN3_PIN, BTN4_PIN, BTN5_PIN, BTN6_PIN};
+volatile bool buttonPressed[NUM_BUTTONS] = {false};
+volatile unsigned long lastPressTime[NUM_BUTTONS] = {0};
+
 void sendColorData();
+void handleButtonPress();
 
 void setup() {
   delay(3500);
@@ -24,12 +30,10 @@ void setup() {
   game = Game();
 
   // Set up interrupts for player buttons
-  attachInterrupt(digitalPinToInterrupt(BTN1_PIN), onButtonPress1, FALLING);
-  attachInterrupt(digitalPinToInterrupt(BTN2_PIN), onButtonPress2, FALLING);
-  attachInterrupt(digitalPinToInterrupt(BTN3_PIN), onButtonPress3, FALLING);
-  attachInterrupt(digitalPinToInterrupt(BTN4_PIN), onButtonPress4, FALLING);
-  attachInterrupt(digitalPinToInterrupt(BTN5_PIN), onButtonPress5, FALLING);
-  attachInterrupt(digitalPinToInterrupt(BTN6_PIN), onButtonPress6, FALLING);
+  for (int i = 0; i < NUM_BUTTONS; i++) {
+    pinMode(buttonPins[i], INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(buttonPins[i]), handleButtonPress, FALLING);
+  }
 
   setupWebServer();
 
@@ -46,6 +50,26 @@ void loop() {
   uint32_t current_time = millis();
   while (millis() - current_time < 20) {
     webSocket.loop();
+  }
+
+  for (int i = 0; i < NUM_BUTTONS; i++) {
+    if (buttonPressed[i]) {
+      // Rufe die Funktion aus der Game-Klasse auf
+      game.handleButtonPress(i);
+      buttonPressed[i] = false; // Zurücksetzen
+    }
+  }
+}
+
+void handleButtonPress() {
+  unsigned long currentTime = millis();
+  for (int i = 0; i < NUM_BUTTONS; i++) {
+    if (digitalRead(buttonPins[i]) == LOW) {
+      if (currentTime - lastPressTime[i] > 20) { // Entprellung
+        buttonPressed[i] = true;
+        lastPressTime[i] = currentTime;
+      }
+    }
   }
 }
 
