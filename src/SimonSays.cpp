@@ -21,7 +21,7 @@ void SimonSays::game_loop(CRGB* game_field_leds, CRGB* game_player_buttons_leds)
             return;
         }
 
-        if(millis() - animation_timer > 750) {
+        if(millis() - animation_timer > 500) {
             fill_solid(game_field_leds, NUM_GAME_FIELD_LEDS, CRGB::Black);
 
             return;
@@ -42,9 +42,9 @@ void SimonSays::game_loop(CRGB* game_field_leds, CRGB* game_player_buttons_leds)
             }
 
             SwitchToGuessMode();
+        } else {
+            ColorizeField(game_field_leds, sequence[current_sequence_index - 1]);
         }
-
-        ColorizeField(game_field_leds, sequence[guessed]);
     }
 
     if (millis() - last_press > SIMON_SAYS_GUESS_TIME_MILLIS) {
@@ -148,6 +148,8 @@ void SimonSays::guess(uint8_t button_index) {
                 return;
             }
             SwitchToShowMode();
+        } else {
+            SwitchToShowModeCorrectGuess();
         }
     } else {
         game_over = true;
